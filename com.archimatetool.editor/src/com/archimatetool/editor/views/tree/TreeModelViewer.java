@@ -42,12 +42,16 @@ import com.archimatetool.editor.ui.ArchiLabelProvider;
 import com.archimatetool.editor.ui.FontFactory;
 import com.archimatetool.editor.ui.UIUtils;
 import com.archimatetool.editor.ui.components.TreeTextCellEditor;
+import com.archimatetool.editor.ui.textrender.TextRenderer;
+import com.archimatetool.editor.utils.StringUtils;
 import com.archimatetool.editor.views.tree.commands.RenameCommandHandler;
 import com.archimatetool.editor.views.tree.search.SearchFilter;
 import com.archimatetool.model.FolderType;
 import com.archimatetool.model.IArchimateConcept;
 import com.archimatetool.model.IArchimateModel;
+import com.archimatetool.model.IArchimateModelObject;
 import com.archimatetool.model.IArchimateRelationship;
+import com.archimatetool.model.IDiagramModel;
 import com.archimatetool.model.IFolder;
 import com.archimatetool.model.INameable;
 
@@ -349,7 +353,7 @@ public class TreeModelViewer extends TreeViewer {
             cell.setFont(getFont(cell.getElement()));
         }
         
-        String getText(Object element) {
+        private String getText(Object element) {
             String name = ArchiLabelProvider.INSTANCE.getLabelNormalised(element);
             
             // If a dirty model show asterisk
@@ -369,14 +373,58 @@ public class TreeModelViewer extends TreeViewer {
                 name += ")"; //$NON-NLS-1$
             }
             
+            // If a Concept or a View's parent or ancestor parent folder has a text expression, evaluate it
+            String textRender = getTextRendering((IArchimateModelObject)element);
+            if(textRender != null) {
+                return textRender;
+            }
+            
             return name;
         }
         
-        Image getImage(Object element) {
+        /**
+         * If a Concept or a View's parent or ancestor parent folder has a text expression, evaluate it and return it
+         * But let's keep a limit to its length
+         */
+        private String getTextRendering(IArchimateModelObject object) {
+            if(object instanceof IArchimateConcept || object instanceof IDiagramModel) {
+                IFolder folder = (IFolder)object.eContainer();
+                
+                String expression = getAncestorFolderFormatExpression(folder);
+                if(expression != null) {
+                    String text = StringUtils.normaliseNewLineCharacters(TextRenderer.getDefault().render(object, expression));
+                    if(StringUtils.isSet(text)) {
+                        return text.length() > 256 ? text.substring(0, 256) : text;
+                    }
+                }
+            }
+            
+            return null;
+        }
+        
+        /**
+         * Get the ancestor folder format expression or the given folder's format expression
+         * whichever has one first going up the hierarchy
+         * @return the given folder's or ancestor folder's format expression or null if there isn't one
+         */
+        private String getAncestorFolderFormatExpression(IFolder folder) {
+            String expression = null;
+            IArchimateModelObject parent = folder;
+            
+            do {
+                expression = TextRenderer.getDefault().getFormatExpression(parent);
+                parent = (IArchimateModelObject)parent.eContainer();
+            }
+            while(expression == null && parent instanceof IFolder);
+            
+            return expression;
+        }
+
+        private Image getImage(Object element) {
             return ArchiLabelProvider.INSTANCE.getImage(element);
         }
         
-        Font getFont(Object element) {
+        private Font getFont(Object element) {
             // Show bold if using Search
             SearchFilter filter = getSearchFilter();
             if(filter != null && filter.isFiltering() && filter.matchesFilter(element)) {
@@ -393,7 +441,7 @@ public class TreeModelViewer extends TreeViewer {
             return null;
         }
 
-        Color getForeground(Object element) {
+        private Color getForeground(Object element) {
             return fViewpointFilterProvider.getTextColor(element);
         }
     }
