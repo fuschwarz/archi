@@ -49,6 +49,7 @@ import com.archimatetool.model.IDiagramModelArchimateObject;
 import com.archimatetool.model.IDiagramModelContainer;
 import com.archimatetool.model.IDiagramModelObject;
 import com.archimatetool.model.IFolder;
+import com.archimatetool.model.IProperty;
 import com.archimatetool.model.util.ArchimateModelUtils;
 
 
@@ -332,8 +333,8 @@ implements IContextProvider, PropertyChangeListener, ITabbedPropertySheetPageCon
             }
         }
         else if(type == Notification.SET) {
-            // Name changed - need to refresh parent node because of using a ViewerSorter to sort on name
-            if(msg.getFeature() == IArchimatePackage.Literals.NAMEABLE__NAME) {
+            // Name changed or feature changed - need to refresh parent node because of using a ViewerSorter to sort on name
+            if(msg.getFeature() == IArchimatePackage.Literals.NAMEABLE__NAME || msg.getFeature() == IArchimatePackage.Literals.FEATURE__VALUE) {
                 element = msg.getNotifier();
                 if(element instanceof EObject) {
                     element = ((EObject)element).eContainer();
@@ -361,12 +362,22 @@ implements IContextProvider, PropertyChangeListener, ITabbedPropertySheetPageCon
         
         if(type == Notification.REMOVE) {
             element = msg.getOldValue();
+            if(element instanceof IProperty) {
+                list.add(msg.getNotifier());
+            }
         }
         else if(type == Notification.ADD) {
             element = msg.getNewValue();
+            if(element instanceof IProperty) {
+                list.add(((IProperty)element).eContainer());
+            }
         }
         else if(type == Notification.SET) {
             element = msg.getNotifier();
+            if(element instanceof IProperty) {
+                list.add(((IProperty)element).eContainer());
+            }
+            list.add(element);
         }
         
         // If it's a diagram object or a diagram dig in and treat it separately
