@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Color;
 
 import com.archimatetool.canvas.model.ICanvasModelSticky;
 import com.archimatetool.editor.diagram.figures.AbstractDiagramModelObjectFigure;
+import com.archimatetool.editor.diagram.figures.ITextFigure;
 import com.archimatetool.editor.diagram.figures.TextPositionDelegate;
 import com.archimatetool.editor.preferences.Preferences;
 import com.archimatetool.editor.ui.ColorFactory;
@@ -31,7 +32,7 @@ import com.archimatetool.editor.utils.StringUtils;
  * @author Phillip Beauvoir
  */
 public class CanvasStickyFigure
-extends AbstractDiagramModelObjectFigure {
+extends AbstractDiagramModelObjectFigure implements ITextFigure {
     
     private TextFlow fTextFlow;
     private TextPositionDelegate fTextPositionDelegate;
@@ -98,7 +99,8 @@ extends AbstractDiagramModelObjectFigure {
         repaint();
     }
     
-    private void setText() {
+    @Override
+    public void setText() {
         String text = getDiagramModelObject().getContent();
         getTextControl().setText(StringUtils.safeString(text));
     }

@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 
 import com.archimatetool.editor.preferences.IPreferenceConstants;
 import com.archimatetool.editor.preferences.Preferences;
+import com.archimatetool.editor.ui.textrender.TextRenderer;
 import com.archimatetool.editor.utils.StringUtils;
 import com.archimatetool.model.IDiagramModelObject;
 import com.archimatetool.model.ITextAlignment;
@@ -33,7 +34,7 @@ import com.archimatetool.model.ITextPosition;
  * 
  * @author Phillip Beauvoir
  */
-public abstract class AbstractTextControlContainerFigure extends AbstractContainerFigure {
+public abstract class AbstractTextControlContainerFigure extends AbstractContainerFigure implements ITextFigure {
     
     private IFigure fTextControl;
     private int fTextControlType = TEXT_FLOW_CONTROL;
@@ -123,9 +124,13 @@ public abstract class AbstractTextControlContainerFigure extends AbstractContain
         }
     }
     
-    protected void setText() {
-        String text = StringUtils.safeString(getDiagramModelObject().getName());
-        
+    @Override
+    public void setText() {
+        String text = TextRenderer.getDefault().render(getDiagramModelObject());
+        if(!StringUtils.isSet(text)) {
+            text = StringUtils.safeString(getDiagramModelObject().getName());
+        }
+                
         if(getTextControl() instanceof TextFlow) {
             ((TextFlow)getTextControl()).setText(text);
         }
