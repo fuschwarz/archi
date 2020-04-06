@@ -15,11 +15,11 @@ import com.archimatetool.model.IArchimateModelObject;
 @SuppressWarnings("nls")
 public interface ITextRenderer {
     
-    String modelPrefix = "model:";
-    String viewPrefix = "view:";
-    String modelFolderPrefix = "mfolder:";
-    String viewFolderPrefix = "vfolder:";
-    String linkedPrefix = "linked:";
+    String modelPrefix = "model";
+    String viewPrefix = "view";
+    String modelFolderPrefix = "mfolder";
+    String viewFolderPrefix = "vfolder";
+    String linkedPrefix = "linked";
     
     /**
      * @param object The object whose text should be rendered

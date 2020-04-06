@@ -20,7 +20,7 @@ import com.archimatetool.model.IDocumentable;
 @SuppressWarnings("nls")
 public class DocumentationRenderer extends AbstractTextRenderer {
     
-    private static final Pattern DOCUMENTATION_PATTERN = Pattern.compile("\\$\\{(mfolder:|vfolder:|model:|view:|linked:)?documentation}");
+    private static final Pattern DOCUMENTATION_PATTERN = Pattern.compile("\\$(mfolder|vfolder|model|view|linked)?\\{documentation}");
 
     @Override
     public String render(IArchimateModelObject object, String text) {
