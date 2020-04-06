@@ -18,7 +18,7 @@ import com.archimatetool.model.IArchimateModelObject;
 @SuppressWarnings("nls")
 public class NameRenderer extends AbstractTextRenderer {
     
-    private static final Pattern NAME_PATTERN = Pattern.compile("\\$\\{(mfolder:|vfolder:|model:|view:)?name}");
+    private static final Pattern NAME_PATTERN = Pattern.compile("\\$\\{(mfolder:|vfolder:|model:|view:|linked:)?name}");
 
     @Override
     public String render(IArchimateModelObject object, String text) {
@@ -26,10 +26,14 @@ public class NameRenderer extends AbstractTextRenderer {
         
         while(matcher.find()) {
             String prefix = matcher.group(1);
+            String replacement = "";
+            
             IArchimateModelObject refObject = getObjectFromPrefix(object, prefix);
             if(refObject != null) {
-                text = text.replace(matcher.group(), refObject.getName());
+                replacement = refObject.getName();
             }
+            
+            text = text.replace(matcher.group(), replacement);
         }
         
         return text;

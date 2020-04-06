@@ -9,6 +9,7 @@ import com.archimatetool.model.IArchimateModelObject;
 import com.archimatetool.model.IDiagramModel;
 import com.archimatetool.model.IDiagramModelArchimateComponent;
 import com.archimatetool.model.IDiagramModelComponent;
+import com.archimatetool.model.IDiagramModelNote;
 import com.archimatetool.model.IFolder;
 
 /**
@@ -40,12 +41,28 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
             return object.getArchimateModel();
         }
 
-        // View
-        // object is an IDiagramModelComponent return IDiagramModel
+        // View - object is an IDiagramModelComponent so return IDiagramModel
         if(viewPrefix.equals(prefix) && object instanceof IDiagramModelComponent) {
             return ((IDiagramModelComponent)object).getDiagramModel();
         }
         
+        // Linked object from a Note
+        if(linkedPrefix.equals(prefix) && object instanceof IDiagramModelNote) {
+            IDiagramModelNote note = (IDiagramModelNote)object;
+            IArchimateModelObject other = null;
+            
+            // Note has at least one source connection...
+            if(!note.getSourceConnections().isEmpty()) {
+                other = note.getSourceConnections().get(0).getTarget();
+            }
+            // Or Note has at least one target connection...
+            else if(!note.getTargetConnections().isEmpty()) {
+                other = note.getTargetConnections().get(0).getSource();
+            }
+            
+            return getActualObject(other);
+        }
+            
         IArchimateModelObject actualObject = getActualObject(object);
 
         // Model Folder

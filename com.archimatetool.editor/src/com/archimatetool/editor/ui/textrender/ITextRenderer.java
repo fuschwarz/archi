@@ -19,6 +19,7 @@ public interface ITextRenderer {
     String viewPrefix = "view:";
     String modelFolderPrefix = "mfolder:";
     String viewFolderPrefix = "vfolder:";
+    String linkedPrefix = "linked:";
     
     /**
      * @param object The object whose text should be rendered

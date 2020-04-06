@@ -8,6 +8,7 @@ package com.archimatetool.editor.ui.textrender;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.archimatetool.model.IArchimateModel;
 import com.archimatetool.model.IArchimateModelObject;
 import com.archimatetool.model.IDocumentable;
 
@@ -19,7 +20,7 @@ import com.archimatetool.model.IDocumentable;
 @SuppressWarnings("nls")
 public class DocumentationRenderer extends AbstractTextRenderer {
     
-    private static final Pattern DOCUMENTATION_PATTERN = Pattern.compile("\\$\\{(mfolder:|vfolder:|model:|view:)?documentation}");
+    private static final Pattern DOCUMENTATION_PATTERN = Pattern.compile("\\$\\{(mfolder:|vfolder:|model:|view:|linked:)?documentation}");
 
     @Override
     public String render(IArchimateModelObject object, String text) {
@@ -29,14 +30,15 @@ public class DocumentationRenderer extends AbstractTextRenderer {
             String prefix = matcher.group(1);
             String replacement = "";
             
-            // If this object is IDocumentable
-            if(getActualObject(object) instanceof IDocumentable) {
-                // Get ref object...
-                IArchimateModelObject refObject = getObjectFromPrefix(object, prefix);
-                // If ref object is IDocumentable
-                if(refObject instanceof IDocumentable) {
-                    replacement = ((IDocumentable)refObject).getDocumentation();
-                }
+            // Get ref object...
+            IArchimateModelObject refObject = getObjectFromPrefix(object, prefix);
+            // If ref object is IDocumentable
+            if(refObject instanceof IDocumentable) {
+                replacement = ((IDocumentable)refObject).getDocumentation();
+            }
+            // If ref object is IArchimateModel use Purpose
+            else if(refObject instanceof IArchimateModel) {
+                replacement = ((IArchimateModel)refObject).getPurpose();
             }
             
             text = text.replace(matcher.group(), replacement);
