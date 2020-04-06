@@ -42,7 +42,6 @@ public class TextRenderer {
         
         registerRenderer(new TextContentRenderer());
         registerRenderer(new RelationshipRenderer());
-        registerRenderer(new LinkedNoteRenderer());
         registerRenderer(new ViewpointRenderer());
     }
     

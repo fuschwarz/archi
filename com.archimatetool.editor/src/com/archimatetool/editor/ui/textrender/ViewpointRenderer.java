@@ -15,7 +15,7 @@ import com.archimatetool.model.viewpoints.ViewpointManager;
  * @author Phillip Beauvoir
  */
 @SuppressWarnings("nls")
-public class ViewpointRenderer implements ITextRenderer {
+public class ViewpointRenderer extends AbstractTextRenderer {
     
     public static final String VIEWPOINT = "${viewpoint}";
 
