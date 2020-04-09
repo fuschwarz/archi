@@ -18,7 +18,7 @@ import com.archimatetool.model.IArchimateModelObject;
 @SuppressWarnings("nls")
 public class NameRenderer extends AbstractTextRenderer {
     
-    private static final Pattern NAME_PATTERN = Pattern.compile("\\$(mfolder|vfolder|model|view|linked)?\\{name}");
+    private static final Pattern NAME_PATTERN = Pattern.compile("\\$(" + allPrefixes + ")?\\{name}");
 
     @Override
     public String render(IArchimateModelObject object, String text) {
