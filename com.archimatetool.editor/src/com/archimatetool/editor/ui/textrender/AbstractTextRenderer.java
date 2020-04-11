@@ -37,6 +37,13 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
      * @return the referenced object
      */
     protected IArchimateModelObject getObjectFromPrefix(IArchimateModelObject object, String prefix) {
+        IArchimateModelObject actualObject = getActualObject(object);
+
+        // No prefix
+        if(prefix == null) {
+            return actualObject;
+        }
+        
         // Model
         if(modelPrefix.equals(prefix)) {
             return object.getArchimateModel();
@@ -47,8 +54,6 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
             return ((IDiagramModelComponent)object).getDiagramModel();
         }
         
-        IArchimateModelObject actualObject = getActualObject(object);
-
         // Model Folder
         if(modelFolderPrefix.equals(prefix) && actualObject.eContainer() instanceof IFolder) { // Has a folder parent
             return (IFolder)actualObject.eContainer();
@@ -60,8 +65,10 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
             return dm != null ? (IArchimateModelObject)dm.eContainer() : null; // folder parent of IDiagramModel
         }
         
-        // Linked object from a Connection
-        if(prefix != null && connectionPrefixes.contains(prefix)) {
+        // Linked Source object from a connection
+        if(prefix.endsWith(":source")) { //$NON-NLS-1$
+            prefix = prefix.replace(":source", ""); //$NON-NLS-1$ //$NON-NLS-2$
+
             // Has at least one target connection that matches...
             for(IDiagramModelConnection connection : ((IConnectable)object).getTargetConnections()) {
                 IArchimateModelObject actualConnection = getActualObject(connection);
@@ -69,11 +76,21 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
                     return getActualObject(connection.getSource());
                 }
             }
-            
-            return null;
         }
-            
-        return actualObject;
+        // Linked Source object from a connection
+        else if(prefix.endsWith(":target")) { //$NON-NLS-1$
+            prefix = prefix.replace(":target", ""); //$NON-NLS-1$ //$NON-NLS-2$
+
+            // Has at least one target connection that matches...
+            for(IDiagramModelConnection connection : ((IConnectable)object).getSourceConnections()) {
+                IArchimateModelObject actualConnection = getActualObject(connection);
+                if(actualConnection.eClass().getName().toLowerCase().contains(prefix)) {
+                    return getActualObject(connection.getTarget());
+                }
+            }
+        }
+
+        return null;
     }
 
 }
