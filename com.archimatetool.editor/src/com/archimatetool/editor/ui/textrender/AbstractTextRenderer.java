@@ -68,7 +68,7 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
         }
         
         // Linked Source object from a connection
-        if(prefix.endsWith(":source")) { //$NON-NLS-1$
+        if(prefix.endsWith(":source") && object instanceof IConnectable) { //$NON-NLS-1$
             prefix = prefix.replace(":source", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
             // Has at least one target connection that matches...
@@ -79,8 +79,8 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
                 }
             }
         }
-        // Linked Source object from a connection
-        else if(prefix.endsWith(":target")) { //$NON-NLS-1$
+        // Linked Target object from a connection
+        else if(prefix.endsWith(":target") && object instanceof IConnectable) { //$NON-NLS-1$
             prefix = prefix.replace(":target", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
             // Has at least one target connection that matches...
