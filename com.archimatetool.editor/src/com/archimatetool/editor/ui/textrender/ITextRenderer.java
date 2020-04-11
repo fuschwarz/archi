@@ -21,9 +21,8 @@ public interface ITextRenderer {
     String viewFolderPrefix = "vfolder";
     
     String corePrefixes = "mfolder|vfolder|model|view";
-    String sourceConnectionPrefixes = "connection:source|triggering:source|access:source|specialization:source|composition:source|assignment:source|aggregation:source|realization:source|serving:source|influence:source|flow:source|association:source";
-    String targetConnectionPrefixes = "connection:target|triggering:target|access:target|specialization:target|composition:target|assignment:target|aggregation:target|realization:target|serving:target|influence:target|flow:target|association:target";
-    String allPrefixes = corePrefixes + "|" + sourceConnectionPrefixes + "|" + targetConnectionPrefixes;
+    String connectionPrefixes = "connection:\\w+|triggering:\\w+|access:\\w+|specialization:\\w+|composition:\\w+|assignment:\\w+|aggregation:\\w+|realization:\\w+|serving:\\w+|influence:\\w+|flow:\\w+|association:\\w+";
+    String allPrefixes = corePrefixes + "|" + connectionPrefixes;
     
     /**
      * @param object The object whose text should be rendered

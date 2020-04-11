@@ -34,12 +34,14 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
      * Get the object referred to by prefix
      * @param object The object
      * @param prefix The prefix
-     * @return the referenced object
+     * @return the referenced object if prefix is set.
+     *         Returns the actual object if prefix is null.
+     *         Return null if the prefix is not appropriate for the obect.
      */
     protected IArchimateModelObject getObjectFromPrefix(IArchimateModelObject object, String prefix) {
         IArchimateModelObject actualObject = getActualObject(object);
 
-        // No prefix
+        // No prefix so return actual object
         if(prefix == null) {
             return actualObject;
         }
