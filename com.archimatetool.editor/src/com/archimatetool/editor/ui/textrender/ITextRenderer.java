@@ -21,7 +21,7 @@ public interface ITextRenderer {
     String viewFolderPrefix = "vfolder";
     
     String corePrefixes = "mfolder|vfolder|model|view";
-    String connectionPrefixes = "connection:\\w+|triggering:\\w+|access:\\w+|specialization:\\w+|composition:\\w+|assignment:\\w+|aggregation:\\w+|realization:\\w+|serving:\\w+|influence:\\w+|flow:\\w+|association:\\w+";
+    String connectionPrefixes = "connection:(?:source|target)|triggering:(?:source|target)|access:(?:source|target)|specialization:(?:source|target)|composition:(?:source|target)|assignment:(?:source|target)|aggregation:(?:source|target)|realization:(?:source|target)|serving:(?:source|target)|influence:(?:source|target)|flow:(?:source|target)|association:(?:source|target)";
     String allPrefixes = corePrefixes + "|" + connectionPrefixes;
     
     /**
