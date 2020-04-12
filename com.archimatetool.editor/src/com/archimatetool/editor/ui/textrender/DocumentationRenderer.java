@@ -20,7 +20,7 @@ import com.archimatetool.model.IDocumentable;
 @SuppressWarnings("nls")
 public class DocumentationRenderer extends AbstractTextRenderer {
     
-    private static final Pattern DOCUMENTATION_PATTERN = Pattern.compile("\\$(" + allPrefixes + ")?\\{(documentation|doc)}");
+    private static final Pattern DOCUMENTATION_PATTERN = Pattern.compile("\\$" + allPrefixesGroup + "\\{(documentation|doc)\\}");
 
     @Override
     public String render(IArchimateModelObject object, String text) {

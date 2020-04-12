@@ -18,7 +18,7 @@ import com.archimatetool.model.IArchimateModelObject;
 @SuppressWarnings("nls")
 public class NameRenderer extends AbstractTextRenderer {
     
-    private static final Pattern NAME_PATTERN = Pattern.compile("\\$(" + allPrefixes + ")?\\{name}");
+    private static final Pattern NAME_PATTERN = Pattern.compile("\\$" + allPrefixesGroup + "\\{name\\}");
 
     @Override
     public String render(IArchimateModelObject object, String text) {

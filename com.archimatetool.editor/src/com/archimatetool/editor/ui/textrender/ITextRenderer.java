@@ -20,9 +20,27 @@ public interface ITextRenderer {
     String modelFolderPrefix = "mfolder";
     String viewFolderPrefix = "vfolder";
     
+    /**
+     * Core prefixes of model folder, view folder, model or view
+     * For example $model{name}
+     */
     String corePrefixes = "mfolder|vfolder|model|view";
-    String connectionPrefixes = "connection:(?:source|target)|triggering:(?:source|target)|access:(?:source|target)|specialization:(?:source|target)|composition:(?:source|target)|assignment:(?:source|target)|aggregation:(?:source|target)|realization:(?:source|target)|serving:(?:source|target)|influence:(?:source|target)|flow:(?:source|target)|association:(?:source|target)";
-    String allPrefixes = corePrefixes + "|" + connectionPrefixes;
+    
+    
+    /**
+     * Connection/relationship prefixes and source/target
+     * For example $connection:source{name} $composition:target{name}
+     * This is two non-capturing groups
+     */
+    String connectionPrefixes = "(?:connection:|triggering:|access:|specialization:|composition:|assignment:|aggregation:|realization:|serving:|influence:|flow:|association:)(?:source|target)";
+    
+    /**
+     * This consists of one capturing group choice (group 1) of either
+     * 1. one of the corePrefixes
+     * or
+     * 2. one of the connectionPrefixes
+     */
+    String allPrefixesGroup = "(" + corePrefixes + "|" + connectionPrefixes + ")?";
     
     /**
      * @param object The object whose text should be rendered

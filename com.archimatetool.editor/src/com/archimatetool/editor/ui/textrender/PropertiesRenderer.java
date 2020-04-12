@@ -24,7 +24,7 @@ public class PropertiesRenderer extends AbstractTextRenderer {
     private static final String PROPERTIES_VALUES = "${propertiesvalues}";
     
     private static final Pattern FILTERED_PROPERTIES_WITH_SEPARATOR = Pattern.compile("\\$\\{properties:([^:]*):([^\\}]+)\\}");
-    private static final Pattern PROPERTY_VALUE = Pattern.compile("\\$(" + allPrefixes + ")?\\{property:([^\\}]+)\\}");
+    private static final Pattern PROPERTY_VALUE = Pattern.compile("\\$" + allPrefixesGroup + "\\{property:([^\\}]+)\\}");
 
     @Override
     public String render(IArchimateModelObject object, String text) {
