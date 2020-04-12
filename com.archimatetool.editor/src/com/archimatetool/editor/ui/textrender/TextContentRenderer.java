@@ -19,7 +19,7 @@ import com.archimatetool.model.ITextContent;
 @SuppressWarnings("nls")
 public class TextContentRenderer extends AbstractTextRenderer {
     
-    private static final Pattern CONTENT_PATTERN = Pattern.compile("\\$(linked)?\\{content}");
+    private static final Pattern CONTENT_PATTERN = Pattern.compile("\\$(connection:(?:source|target))?\\{content\\}");
 
     @Override
     public String render(IArchimateModelObject object, String text) {
