@@ -18,6 +18,7 @@ import com.archimatetool.model.IFolder;
  * 
  * @author Phillip Beauvoir
  */
+@SuppressWarnings("nls")
 public abstract class AbstractTextRenderer implements ITextRenderer {
     
     /**
@@ -68,8 +69,8 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
         }
         
         // Linked Source object from a connection
-        if(prefix.endsWith(":source") && object instanceof IConnectable) { //$NON-NLS-1$
-            prefix = prefix.replace(":source", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        if(prefix.endsWith(":source") && object instanceof IConnectable) {
+            prefix = prefix.replace(":source", "");
 
             // Has at least one target connection that matches...
             for(IDiagramModelConnection connection : ((IConnectable)object).getTargetConnections()) {
@@ -80,8 +81,8 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
             }
         }
         // Linked Target object from a connection
-        else if(prefix.endsWith(":target") && object instanceof IConnectable) { //$NON-NLS-1$
-            prefix = prefix.replace(":target", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        else if(prefix.endsWith(":target") && object instanceof IConnectable) {
+            prefix = prefix.replace(":target", "");
 
             // Has at least one target connection that matches...
             for(IDiagramModelConnection connection : ((IConnectable)object).getSourceConnections()) {

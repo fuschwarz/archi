@@ -16,7 +16,7 @@ import com.archimatetool.model.IArchimateModelObject;
 @SuppressWarnings("nls")
 public class TypeRenderer extends AbstractTextRenderer {
     
-    public static final String TYPE = "${type}";
+    private static final String TYPE = "${type}";
 
     @Override
     public String render(IArchimateModelObject object, String text) {

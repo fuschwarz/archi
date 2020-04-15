@@ -16,7 +16,7 @@ import com.archimatetool.model.IInfluenceRelationship;
 public class RelationshipRenderer extends AbstractTextRenderer {
     
     // Influence Strength
-    public static final String STRENGTH = "${strength}"; //$NON-NLS-1$
+    private static final String STRENGTH = "${strength}"; //$NON-NLS-1$
 
     @Override
     public String render(IArchimateModelObject object, String text) {

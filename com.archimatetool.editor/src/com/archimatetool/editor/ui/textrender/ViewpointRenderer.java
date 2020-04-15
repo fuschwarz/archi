@@ -7,6 +7,7 @@ package com.archimatetool.editor.ui.textrender;
 
 import com.archimatetool.model.IArchimateDiagramModel;
 import com.archimatetool.model.IArchimateModelObject;
+import com.archimatetool.model.IDiagramModelComponent;
 import com.archimatetool.model.viewpoints.ViewpointManager;
 
 /**
@@ -17,16 +18,17 @@ import com.archimatetool.model.viewpoints.ViewpointManager;
 @SuppressWarnings("nls")
 public class ViewpointRenderer extends AbstractTextRenderer {
     
-    public static final String VIEWPOINT = "${viewpoint}";
+    private static final String VIEWPOINT = "${viewpoint}";
 
     @Override
     public String render(IArchimateModelObject object, String text) {
-        String vpName = "";
+        String replacement = "";
         
-        if(object instanceof IArchimateDiagramModel) {
-            vpName = ViewpointManager.INSTANCE.getViewpoint(((IArchimateDiagramModel)object).getViewpoint()).getName();
+        // Object is a digram model component or diagram model that is an ArchiMate diagram model
+        if(object instanceof IDiagramModelComponent && ((IDiagramModelComponent)object).getDiagramModel() instanceof IArchimateDiagramModel) {
+            replacement = ViewpointManager.INSTANCE.getViewpoint(((IArchimateDiagramModel)((IDiagramModelComponent)object).getDiagramModel()).getViewpoint()).getName();
         }
         
-        return text.replace(VIEWPOINT, vpName);
+        return text.replace(VIEWPOINT, replacement);
     }
 }
