@@ -24,7 +24,7 @@ public class PropertiesRenderer extends AbstractTextRenderer {
     private static final String PROPERTIES_VALUES = "${propertiesvalues}";
     
     private static final Pattern FILTERED_PROPERTIES_WITH_SEPARATOR = Pattern.compile("\\$\\{properties:([^:]*):([^\\}]+)\\}");
-    private static final Pattern PROPERTY_VALUE = Pattern.compile("\\$" + allPrefixesGroup + "\\{property:([^\\}]+)\\}");
+    private static final Pattern PROPERTY_VALUE = Pattern.compile("\\$" + allPrefixesGroup + "\\{property:(.*)\\}");
 
     @Override
     public String render(IArchimateModelObject object, String text) {
@@ -72,6 +72,11 @@ public class PropertiesRenderer extends AbstractTextRenderer {
             String prefix = matcher.group(1);
             String key = matcher.group(2);
             String propertyValue = "";
+            
+            // Nested expression that refers to another object
+            if(key.startsWith("$")) {
+                key = TextRenderer.getDefault().render(object, key);
+            }
             
             IArchimateModelObject refObject = getObjectFromPrefix(object, prefix);
             if(refObject instanceof IProperties) {
