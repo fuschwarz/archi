@@ -5,7 +5,7 @@
  */
 package com.archimatetool.editor.ui.textrender;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.archimatetool.editor.utils.StringUtils;
@@ -26,7 +26,7 @@ public class TextRenderer {
     
     public static final String FEATURE_NAME = "labelExpression";
 
-    private Set<ITextRenderer> renderers = new HashSet<>();
+    private Set<ITextRenderer> renderers = new LinkedHashSet<>();
     
     private static TextRenderer defaultTextRenderer = new TextRenderer();
     
@@ -39,11 +39,13 @@ public class TextRenderer {
         registerRenderer(new NameRenderer());
         registerRenderer(new DocumentationRenderer());
         registerRenderer(new TypeRenderer());
-        registerRenderer(new PropertiesRenderer());
         
         registerRenderer(new TextContentRenderer());
         registerRenderer(new RelationshipRenderer());
         registerRenderer(new ViewpointRenderer());
+
+        // Register this one last because it supports a nested expression and we want that to be evaluated first
+        registerRenderer(new PropertiesRenderer());
     }
     
     /**

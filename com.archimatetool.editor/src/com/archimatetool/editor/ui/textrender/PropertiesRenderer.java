@@ -73,9 +73,16 @@ public class PropertiesRenderer extends AbstractTextRenderer {
             String key = matcher.group(2);
             String propertyValue = "";
             
-            // Nested expression that refers to another object
+            /*
+             * Nested expression that refers to another object.
+             * Because this renderer is last in the series of registered renderers,
+             * all other expressions will have been rendered by this point
+             * except for a nested property value expression. So we recurse this method.
+             */
             if(key.startsWith("$")) {
-                key = TextRenderer.getDefault().render(object, key);
+                key = renderPropertyValue(object, key);
+                // If we don't render in a given order then we would need to call this instead
+                // key = TextRenderer.getDefault().render(object, key);
             }
             
             IArchimateModelObject refObject = getObjectFromPrefix(object, prefix);
