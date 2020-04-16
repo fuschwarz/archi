@@ -68,6 +68,16 @@ public abstract class AbstractTextRenderer implements ITextRenderer {
             return dm != null ? (IArchimateModelObject)dm.eContainer() : null; // folder parent of IDiagramModel
         }
         
+        // Source of Connection
+        if(sourcePrefix.equals(prefix) && object instanceof IDiagramModelConnection) {
+            return getActualObject(((IDiagramModelConnection)object).getSource());
+        }
+        
+        // Target of Connection
+        if(targetPrefix.equals(prefix) && object instanceof IDiagramModelConnection) {
+            return getActualObject(((IDiagramModelConnection)object).getTarget());
+        }
+        
         // Linked Source object from a connection
         if(prefix.endsWith(":source") && object instanceof IConnectable) {
             prefix = prefix.replace(":source", "");

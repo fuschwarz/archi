@@ -19,13 +19,14 @@ public interface ITextRenderer {
     String viewPrefix = "view";
     String modelFolderPrefix = "mfolder";
     String viewFolderPrefix = "vfolder";
+    String sourcePrefix = "source";
+    String targetPrefix = "target";
     
     /**
-     * Core prefixes of model folder, view folder, model or view
+     * Core prefixes of model folder, view folder, model or view, source or target
      * For example $model{name}
      */
-    String corePrefixes = "mfolder|vfolder|model|view";
-    
+    String corePrefixes = "mfolder|vfolder|model|view|source|target";
     
     /**
      * Connection/relationship prefixes and source/target
