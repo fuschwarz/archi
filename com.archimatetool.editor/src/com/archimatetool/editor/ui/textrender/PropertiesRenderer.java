@@ -112,9 +112,10 @@ public class PropertiesRenderer extends AbstractTextRenderer {
             }
             
             text = text.replace(matcher.group(), propertyValue);
+            
+            // Clear this here
+            visitedProperties.clear();
         }
-        
-        visitedProperties.clear();
 
         return text;
     }
