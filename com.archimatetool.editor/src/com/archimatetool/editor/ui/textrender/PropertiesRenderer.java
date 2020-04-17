@@ -64,6 +64,10 @@ public class PropertiesRenderer extends AbstractTextRenderer {
         return text;
     }
 
+    /**
+     * Allow a recursion depth level
+     */
+    private int recursionLevel;
     
     private String renderPropertyValue(IArchimateModelObject object, String text) {
         Matcher matcher = PROPERTY_VALUE.matcher(text);
@@ -88,6 +92,13 @@ public class PropertiesRenderer extends AbstractTextRenderer {
             IArchimateModelObject refObject = getObjectFromPrefix(object, prefix);
             if(refObject instanceof IProperties) {
                 propertyValue = getPropertyValue((IProperties)refObject, key);
+            }
+            
+            // Property value is an expression
+            if(recursionLevel < 2 && propertyValue.startsWith("$")) {
+                recursionLevel++;
+                propertyValue = TextRenderer.getDefault().render(object, propertyValue);
+                recursionLevel = 0;
             }
             
             text = text.replace(matcher.group(), propertyValue);
