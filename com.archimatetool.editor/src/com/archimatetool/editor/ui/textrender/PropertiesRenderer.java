@@ -5,6 +5,8 @@
  */
 package com.archimatetool.editor.ui.textrender;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +27,11 @@ public class PropertiesRenderer extends AbstractTextRenderer {
     
     private static final Pattern FILTERED_PROPERTIES_WITH_SEPARATOR = Pattern.compile("\\$\\{properties:([^:]*):([^\\}]+)\\}");
     private static final Pattern PROPERTY_VALUE = Pattern.compile("\\$" + allPrefixesGroup + "\\{property:(.*)\\}");
+
+    /**
+     * Keep a list of Properties visited to check for circular recursion
+     */
+    private Set<IProperty> visitedProperties = new HashSet<IProperty>();
 
     @Override
     public String render(IArchimateModelObject object, String text) {
@@ -64,11 +71,6 @@ public class PropertiesRenderer extends AbstractTextRenderer {
         return text;
     }
 
-    /**
-     * Allow a recursion depth level
-     */
-    private int recursionLevel;
-    
     private String renderPropertyValue(IArchimateModelObject object, String text) {
         Matcher matcher = PROPERTY_VALUE.matcher(text);
         
@@ -91,19 +93,29 @@ public class PropertiesRenderer extends AbstractTextRenderer {
             
             IArchimateModelObject refObject = getObjectFromPrefix(object, prefix);
             if(refObject instanceof IProperties) {
-                propertyValue = getPropertyValue((IProperties)refObject, key);
+                IProperty property = getProperty((IProperties)refObject, key);
+                if(property != null) {
+                    // Ensure we do not have a circular recursion
+                    if(visitedProperties.contains(property)) {
+                        propertyValue = "***[Label Expression Error] Circular Reference***";
+                    }
+                    else {
+                        visitedProperties.add(property);
+                        propertyValue = property.getValue();
+                    }
+                }
             }
             
             // Property value is an expression
-            if(recursionLevel < 2 && propertyValue.startsWith("$")) {
-                recursionLevel++;
+            if(propertyValue.startsWith("$")) {
                 propertyValue = TextRenderer.getDefault().render(object, propertyValue);
-                recursionLevel = 0;
             }
             
             text = text.replace(matcher.group(), propertyValue);
         }
         
+        visitedProperties.clear();
+
         return text;
     }
     
@@ -137,13 +149,13 @@ public class PropertiesRenderer extends AbstractTextRenderer {
         return s;
     }
     
-    private String getPropertyValue(IProperties object, String key) {
+    private IProperty getProperty(IProperties object, String key) {
         for(IProperty property : object.getProperties()) {
             if(property.getKey().equals(key)) {
-                return property.getValue();
+                return property;
             }
         }
         
-        return "";
+        return null;
     }
 }
