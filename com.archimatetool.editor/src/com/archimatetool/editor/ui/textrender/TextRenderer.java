@@ -14,6 +14,7 @@ import com.archimatetool.model.IDiagramModelArchimateComponent;
 import com.archimatetool.model.IDiagramModelConnection;
 import com.archimatetool.model.IDiagramModelGroup;
 import com.archimatetool.model.IDiagramModelNote;
+import com.archimatetool.model.IDiagramModelReference;
 import com.archimatetool.model.IFolder;
 
 /**
@@ -110,6 +111,7 @@ public class TextRenderer {
         return object instanceof IDiagramModelArchimateComponent 
                 || object instanceof IDiagramModelNote
                 || object instanceof IDiagramModelGroup
+                || object instanceof IDiagramModelReference
                 || object instanceof IDiagramModelConnection
                 || object instanceof IFolder;
     }
