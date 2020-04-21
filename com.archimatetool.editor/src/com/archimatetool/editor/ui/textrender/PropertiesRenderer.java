@@ -5,8 +5,6 @@
  */
 package com.archimatetool.editor.ui.textrender;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,14 +23,14 @@ public class PropertiesRenderer extends AbstractTextRenderer {
     private static final String PROPERTIES = "${properties}";
     private static final String PROPERTIES_VALUES = "${propertiesvalues}";
     
-    private static final Pattern FILTERED_PROPERTIES_WITH_SEPARATOR = Pattern.compile("\\$\\{properties:([^:]*):([^\\}]+)\\}");
-    private static final Pattern PROPERTY_VALUE = Pattern.compile("\\$" + allPrefixesGroup + "\\{property:(.*)\\}");
-
-    /**
-     * Keep a list of Properties visited to check for circular recursion
-     */
-    private Set<IProperty> visitedProperties = new HashSet<IProperty>();
-
+    private static final String startOfExpression = "\\$" + allPrefixesGroup + "\\{";
+    private static final String notStartOfExpression = "(?!" + startOfExpression + ")";
+    private static final String acceptedKeyChar = "[^\\}]";
+    private static final String key = "(" + notStartOfExpression + acceptedKeyChar + ")+";
+    
+    private static final Pattern FILTERED_PROPERTIES_WITH_SEPARATOR = Pattern.compile("\\$\\{properties:([^:]*):(" + key +")\\}");
+    private static final Pattern PROPERTY_VALUE = Pattern.compile(startOfExpression + "property:(" + key + ")\\}");
+    
     @Override
     public String render(IArchimateModelObject object, String text) {
         text = renderPropertyValue(object, text);
@@ -79,42 +77,15 @@ public class PropertiesRenderer extends AbstractTextRenderer {
             String key = matcher.group(2);
             String propertyValue = "";
             
-            /*
-             * Nested expression that refers to another object.
-             * Because this renderer is last in the series of registered renderers,
-             * all other expressions will have been rendered by this point
-             * except for a nested property value expression. So we recurse this method.
-             */
-            if(key.startsWith("$")) {
-                key = renderPropertyValue(object, key);
-                // If we don't render in a given order then we would need to call this instead
-                // key = TextRenderer.getDefault().render(object, key);
-            }
-            
             IArchimateModelObject refObject = getObjectFromPrefix(object, prefix);
             if(refObject instanceof IProperties) {
                 IProperty property = getProperty((IProperties)refObject, key);
                 if(property != null) {
-                    // Ensure we do not have a circular recursion
-                    if(visitedProperties.contains(property)) {
-                        propertyValue = "***[Label Expression Error] Circular Reference***";
-                    }
-                    else {
-                        visitedProperties.add(property);
-                        propertyValue = property.getValue();
-                    }
+                    propertyValue = property.getValue();
                 }
             }
             
-            // Property value is an expression
-            if(propertyValue.startsWith("$")) {
-                propertyValue = TextRenderer.getDefault().render(object, propertyValue);
-            }
-            
             text = text.replace(matcher.group(), propertyValue);
-            
-            // Clear this here
-            visitedProperties.clear();
         }
 
         return text;

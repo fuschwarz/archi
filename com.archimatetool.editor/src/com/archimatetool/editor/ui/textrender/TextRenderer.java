@@ -5,6 +5,7 @@
  */
 package com.archimatetool.editor.ui.textrender;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -74,10 +75,19 @@ public class TextRenderer {
         // Remove escapement of newline chars
         String result = renderNewLines(formatExpression);
         
-        // Iterate through all registered renderers
-        for(ITextRenderer r : renderers) {
-            result = r.render(object, result);
-        }
+        /**
+         * Keep a list of labels visited to check for circular recursion
+         */
+        Set<String> visitedLabels = new HashSet<String>();
+        
+        do {
+        	visitedLabels.add(result);
+        	
+            // Iterate through all registered renderers
+            for(ITextRenderer r : renderers) {
+                result = r.render(object, result);
+            }
+        } while(!visitedLabels.contains(result));
 
         return result;
     }
