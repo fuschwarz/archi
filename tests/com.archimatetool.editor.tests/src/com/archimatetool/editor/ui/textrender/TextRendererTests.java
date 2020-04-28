@@ -48,6 +48,26 @@ public class TextRendererTests {
     }
     
     @Test
+    public void render_NoExpression() {
+        IDiagramModelGroup group = IArchimateFactory.eINSTANCE.createDiagramModelGroup();
+        assertEquals("Just Some Text", textRenderer.render(group, "Just Some Text"));
+    }
+
+    @Test
+    public void render_InfiniteLoop() {
+        IDiagramModelGroup group = IArchimateFactory.eINSTANCE.createDiagramModelGroup();
+        group.setName("${name} Name");
+        assertEquals("*** Recursion Error in Label Expression ***", textRenderer.render(group, "${name}"));
+    }
+
+    @Test
+    public void render_NonInfiniteLoop() {
+        IDiagramModelGroup group = IArchimateFactory.eINSTANCE.createDiagramModelGroup();
+        group.setName("${name}");
+        assertEquals("${name}", textRenderer.render(group, "${name}"));
+    }
+
+    @Test
     public void render_FromObject() {
         IDiagramModelGroup group = IArchimateFactory.eINSTANCE.createDiagramModelGroup();
         group.setName("Group Name");
@@ -110,6 +130,18 @@ public class TextRendererTests {
         assertEquals("Result!", textRenderer.render(dmo, "$model{property:p1}"));
         assertEquals("Result! Result!", textRenderer.render(dmo, "$model{property:p1} $model{property:p1}"));
     }
+
+    @Test
+    public void render_PropertyKey_CircularReference() {
+        IDiagramModelArchimateObject dmo = TextRendererTests.createDiagramModelObject();
+
+        TextRendererTests.addProperty(dmo.getArchimateConcept(), "p1", "${property:p2}");
+        TextRendererTests.addProperty(dmo.getArchimateConcept(), "p2", "${property:p3}");
+        TextRendererTests.addProperty(dmo.getArchimateConcept(), "p3", "${property:p1}");
+        
+        assertEquals("${property:p1}", textRenderer.render(dmo, "${property:p1}"));
+    }
+
 
     @Test
     public void hasFormatExpression_DefaultNull() {

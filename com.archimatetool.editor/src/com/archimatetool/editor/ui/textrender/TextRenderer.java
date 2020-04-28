@@ -75,19 +75,26 @@ public class TextRenderer {
         // Remove escapement of newline chars
         String result = renderNewLines(formatExpression);
         
-        /**
-         * Keep a list of labels visited to check for circular recursion
-         */
-        Set<String> visitedLabels = new HashSet<String>();
+        // Keep a list of results to check for circular recursion
+        Set<String> resultSet = new HashSet<String>();
+        
+        final int MAX_RECURSION = 10; // Max recursion level
         
         do {
-        	visitedLabels.add(result);
-        	
+            // Add to result set
+            resultSet.add(result);
+            
+            // Check for max recursion
+            if(resultSet.size() == MAX_RECURSION) {
+                return "*** Recursion Error in Label Expression ***";
+            }
+
             // Iterate through all registered renderers
             for(ITextRenderer r : renderers) {
                 result = r.render(object, result);
             }
-        } while(!visitedLabels.contains(result));
+            
+        } while((!resultSet.contains(result)));
 
         return result;
     }
