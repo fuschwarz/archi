@@ -123,14 +123,16 @@ public class TreeModelViewer extends TreeViewer {
                     return 0;
                 }
                 
-                String name1 = ArchiLabelProvider.INSTANCE.getLabelNormalised(e1);
-                String name2 = ArchiLabelProvider.INSTANCE.getLabelNormalised(e2);
-                
+                // Get rendered text or name
+                String name1 = ((ModelTreeViewerLabelProvider)getLabelProvider()).getTextRendering((IArchimateModelObject)e1);
                 if(name1 == null) {
-                    name1 = "";//$NON-NLS-1$
+                    name1 = StringUtils.safeString(ArchiLabelProvider.INSTANCE.getLabelNormalised(e1));
                 }
+
+                // Get rendered text or name
+                String name2 = ((ModelTreeViewerLabelProvider)getLabelProvider()).getTextRendering((IArchimateModelObject)e2);
                 if(name2 == null) {
-                    name2 = "";//$NON-NLS-1$
+                    name2 = StringUtils.safeString(ArchiLabelProvider.INSTANCE.getLabelNormalised(e2));
                 }
                 
                 //return getComparator().compare(name1, name2);

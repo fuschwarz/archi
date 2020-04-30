@@ -333,12 +333,27 @@ implements IContextProvider, PropertyChangeListener, ITabbedPropertySheetPageCon
             }
         }
         else if(type == Notification.SET) {
-            // Name changed or feature changed - need to refresh parent node because of using a ViewerSorter to sort on name
-            if(msg.getFeature() == IArchimatePackage.Literals.NAMEABLE__NAME || msg.getFeature() == IArchimatePackage.Literals.FEATURE__VALUE) {
+            // Need to refresh parent node because of using a ViewerSorter to sort on name
+            
+            // Name, Documentation or Feature changed
+            if(msg.getFeature() == IArchimatePackage.Literals.NAMEABLE__NAME
+                    || msg.getFeature() == IArchimatePackage.Literals.DOCUMENTABLE__DOCUMENTATION
+                    || msg.getFeature() == IArchimatePackage.Literals.FEATURE__VALUE) {
+                element = msg.getNotifier();
+            }
+            
+            // Property key or value - get its eContainer
+            if(msg.getFeature() == IArchimatePackage.Literals.PROPERTY__KEY
+                    || msg.getFeature() == IArchimatePackage.Literals.PROPERTY__VALUE) {
                 element = msg.getNotifier();
                 if(element instanceof EObject) {
-                    element = ((EObject)element).eContainer();
+                    element =  ((EObject)element).eContainer();
                 }
+            }
+            
+            // Folder or Model
+            if(element instanceof EObject) {
+                element = ((EObject)element).eContainer();
             }
         }
         
