@@ -220,14 +220,7 @@ public class IconSection extends DiagramModelImageSection {
         if(iconic.getImagePath() != null) {
             IArchiveManager archiveManager = (IArchiveManager)iconic.getAdapter(IArchiveManager.class);
             
-            Image image = null;
-            try {
-                image = archiveManager.createImage(iconic.getImagePath());
-            }
-            catch(Exception ex) {
-                ex.printStackTrace();
-            }
-            
+            Image image = archiveManager.createImage(iconic.getImagePath());
             if(image != null) {
                 // If the image is bigger than the maximum allowed image then create a scaled image
                 if(image.getBounds().width > IIconic.MAX_IMAGE_SIZE || image.getBounds().height > IIconic.MAX_IMAGE_SIZE) {
